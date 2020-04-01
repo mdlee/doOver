@@ -1,0 +1,15 @@
+// online sellers
+// underlying rate inference
+
+data {
+  int<lower=1> nSellers;
+  int<lower=0> k[nSellers];
+  int<lower=1> n[nSellers];
+}
+parameters {
+  vector[nSellers] theta;
+}
+model{
+  k ~ binomial(n, theta);
+  theta ~ uniform(0, 1);
+}

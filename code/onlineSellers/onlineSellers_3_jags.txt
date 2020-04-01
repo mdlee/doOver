@@ -1,0 +1,13 @@
+# onlineSellers_3
+# posterior predictive of first two sellers relative to third
+model{
+  for (i in 1:nSellers){
+    # Data
+    k[i] ~ dbin(theta[i], n[i])
+    # Prior
+    theta[i] ~ dunif(0, 1)
+    # Posterior predictive
+    kPostpred[i] ~ dbin(theta[i], nPostpred)
+    piPostpred[i] = step(kPostpred[i] - k[3])
+  }	
+}

@@ -1,0 +1,10 @@
+# onlineSellers_1
+# underlying rate inference
+model{
+  for (i in 1:nSellers){
+    # Data
+    k[i] ~ dbin(theta[i], n[i])
+    # Prior
+    theta[i] ~ dunif(0, 1)
+  }	
+}

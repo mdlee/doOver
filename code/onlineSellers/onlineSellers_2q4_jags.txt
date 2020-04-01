@@ -1,0 +1,14 @@
+# onlineSellers_2q1
+# probability each seller is 5% better than each other
+model{
+  for (i in 1:nSellers){
+    # Data
+    k[i] ~ dbin(theta[i], n[i])
+    # Prior
+    theta[i] ~ dunif(0, 1)
+    # Probability each rate is greater than each other
+    for (j in 1:nSellers){
+      pi[i, j] = step(theta[i] - theta[j] - 0.05)
+    }
+  }	
+}
