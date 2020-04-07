@@ -1,0 +1,19 @@
+# Consensus weight
+# q1 more general implementation
+model{
+  for (t in 1:totalTrials){
+    y[t] ~ dnorm(yHat[t], 1)
+    yPostpred[t] ~ dnorm(yHat[t], 1)
+    yHat[t] = inprod(w[t, ], x[t, ])
+    for (j in 1:nMembers){
+      w[t, j] = wTmp[t, j]/sum(wTmp[t, ])
+      wTmp[t, j] = sum(f[t, j, ]) - 1
+      for (k in 1:nMembers){
+        f[t, j, k] = exp(-theta[g[t]] * abs(x[t, j] - x[t, k])) 
+      }
+    }
+  }
+  for (i in 1:nGroups){
+    theta[i] ~ dgamma(2, 1)
+  }
+}
