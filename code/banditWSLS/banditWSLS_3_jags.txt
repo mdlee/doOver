@@ -1,0 +1,22 @@
+# Bandit win-stay lose-shift
+# v3: trial-dependent lose-shift
+model{
+  # Data  
+  for (g in 1:nGames){
+    y[g, 1] ~ dbern(0.5)
+    yPostpred[i, 1] = 0.5
+    for (t in 2:nTrials){
+      theta[i, jg = alpha*equals(r[g, j-1], 1)*equals(y[g, t-1], 1)
+                  + (1 - alpha)*equals(r[g, j-1], 1)*equals(y[g, t-1], 0)
+                  + (1 - beta[j-1])*equals(r[g, j-1], 0)*equals(y[g, t-1], 1)
+                  + beta[j-1]*equals(r[g, j-1], 0)*equals(y[g, t-1], 0)  
+      y[g, t] ~ dbern(theta[g, t])
+      yPostpred[g, t] = equals(step(theta[g, t] - 0.5), y[g ,t])
+    }
+  }
+  # Prior
+  alpha ~ dunif(0, 1)
+  for (t in 1:(nTrials-1)){
+    beta[t] ~ dunif(0, 1)
+  }
+}

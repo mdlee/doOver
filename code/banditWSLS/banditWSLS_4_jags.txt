@@ -1,0 +1,37 @@
+# Bandit win-stay lose-shift
+# v4: model selection
+model{
+  # Data  
+  for (g in 1:nGames){
+    y[g, 1] ~ dbern(0.5)
+    for (t in 2:nTrials){
+      # Basic WSLS model
+      theta[g, j, 1] = alpha[1]*equals(r[g, t-1], 1)*equals(y[g, t-1], 1)
+                  + (1 - alpha[1])*equals(r[g, t-1], 1)*equals(y[g, t-1], 0)
+                  + (1 - alpha[1])*equals(r[g, t-1], 0)*equals(y[g, t-1], 1)
+                  + alpha[1]*equals(r[g, t-1], 0)*equals(y[g, t-1], 0)
+      # Extended WS vs LS model
+      theta[g, j, 2] = alpha[2]*equals(r[g, t-1], 1)*equals(y[g, t-1], 1)
+                  + (1 - alpha[2])*equals(r[g, t-1], 1)*equals(y[g, t-1], 0)
+                  + (1 - beta[2])*equals(r[g, t-1], 0)*equals(y[g, t-1], 1)
+                  + beta[2]*equals(r[g, t-1], 0)*equals(y[g, t-1], 0)
+      # Extended WS vs LS with trial-dependent LS model  
+      theta[g, j, 3] = alpha[3]*equals(r[g, t-1], 1)*equals(y[g, t-1], 1)
+                  + (1 - alpha[3])*equals(r[g, t-1], 1)*equals(y[g, t-1], 0)
+                  + (1 - betaInd[t-1])*equals(r[g, t-1], 0)*equals(y[g, t-1], 1)
+                  + betaInd[t-1]*equals(r[g, t-1], 0)*equals(y[g, t-1], 0)  
+      # Data
+      y[g, t] ~ dbern(theta[g, j, z])
+    }
+  }
+  # Priors
+  z ~ dcat(c(1, 1,1)) # model indicator
+  alpha[1] ~ dunif(0, 1)
+  alpha[2] ~ dunif(0, 1)
+  alpha[3] ~ dunif(0, 1)
+  beta[1] ~ dunif(0, 1)
+  beta[2] ~ dunif(0, 1)
+  for (t in 1:(nTrials-1)){
+    betaInd[t] ~ dunif(0, 1)
+  }
+}

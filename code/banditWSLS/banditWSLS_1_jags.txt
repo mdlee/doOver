@@ -1,0 +1,18 @@
+# Bandit win-stay lose-shift
+model{
+  # Data  
+  for (g in 1:nGames){
+    y[g, 1] ~ dbern(0.5)
+    yPostpred[g, 1] = 0.5
+    for (j=t in 2:nTrials){
+      theta[g, t] = alpha*equals(r[g, j-1], 1)*equals(y[g, t-1], 1)
+                  + (1 - alpha)*equals(r[g, j-1], 1)*equals(y[g, t-1], 0)
+                  + (1 - alpha)*equals(r[g, j-1], 0)*equals(y[g, t-1], 1)
+                  + alpha*equals(r[g, j-1], 0)*equals(y[g, t-1], 0)  
+      y[g, t] ~ dbern(theta[g, t])
+      yPostpred[g, t] = equals(step(theta[g, t] - 0.5), y[g ,t])
+    }
+  }
+  # Prior
+  alpha ~ dunif(0, 1)
+}
