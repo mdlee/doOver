@@ -1,0 +1,19 @@
+# Rasch model, with accuracy based opt in
+model{
+  for (p in 1:nPeople){
+    for (q in 1:nQuestions){
+      y[p, q] ~ dcat(piPrime[p, q, ])
+      pi[p, q] = exp(theta[p] - beta[q])/(1 + exp(theta[p] - beta[q]))
+      piPrime[p, q, 1] = 1 - pi[p, q]  # no answers
+      piPrime[p, q, 2] = pi[p, q] * pi[p, q] # correct answer
+      piPrime[p, q, 3] = pi[p, q] * (1 - pi[p, q]) # incorrect answer
+    }
+  }
+  # Priors
+  for (p in 1:nPeople){
+    theta[p] ~ dnorm(0, 1)
+  }
+  for (q in 1:nQuestions){
+    beta[q] ~ dnorm(0, 1)
+  }
+}

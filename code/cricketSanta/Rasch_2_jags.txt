@@ -1,0 +1,20 @@
+# Rasch model, with independent opt in
+model{
+  for (p in 1:nPeople){
+    for (q in 1:nQuestions){
+      y[p, q] ~ dcat(piPrime[p, q, ])
+      pi[p, q] = exp(theta[p] - beta[q])/(1 + exp(theta[p] - beta[q]))
+      piPrime[p, q, 1] = 1 - rho[p]  # no answers
+      piPrime[p, q, 2] = rho[p] * pi[p, q] # correct answer
+      piPrime[p, q, 3] = rho[p] * (1 - pi[p, q]) # incorrect answer
+    }
+  }
+  # Priors
+  for (p in 1:nPeople){
+    theta[p] ~ dnorm(0, 1)
+    rho[p] ~ dunif(0, 1)
+  }
+  for (q in 1:nQuestions){
+    beta[q] ~ dnorm(0, 1)
+  }
+}

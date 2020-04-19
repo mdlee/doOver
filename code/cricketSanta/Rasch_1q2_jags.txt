@@ -1,0 +1,17 @@
+# Rasch model, answer to question 2
+model{
+  for (p in 1:nPeople){
+    for (q in 1:nQuestions){
+      y[p, q] ~ dbern(pi[p, q])
+      pi[p, q] = exp(theta[p] - beta[q])/(1 + exp(theta[p] - beta[q]))
+    }
+  }
+  # Priors
+  for (p in 1:nPeople){
+    theta[p] ~ dnorm(0, 1)
+  }
+  for (q in 1:nQuestions){
+    beta[q] ~ dnorm(0, 1)
+  }
+  delta = step(theta[1] - theta[nPeople])
+}
