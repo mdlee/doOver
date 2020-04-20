@@ -1,0 +1,10 @@
+# Infer a Gaussian for height
+model{
+  for (i in 1:nPeople){
+    y[i] ~ dnorm(mu, 1/sigma^2)
+  }
+  mu ~ dunif(0, 300)
+  sigma ~ dunif(0, 100)
+  # Representative
+  yRep ~ dnorm(mu, 1/sigma^2)
+}
