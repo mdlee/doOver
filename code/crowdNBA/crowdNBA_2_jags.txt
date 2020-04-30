@@ -1,0 +1,16 @@
+# Crowd NBA, multiple teams
+model{
+  for (i in 1:nPeople){
+    for (j in 1:nTeams){
+      y[i, j] ~ dnorm(mu[j], 1/sigma[i]^2)T(0, 1)
+    }
+  }
+  for (j in 1:nTeams){
+    mu[j] ~ dunif(0, 1)
+    delta[j] = mu[j] - truth[j]
+  }
+  deltaPrime = mean(abs(delta))
+  for (i in 1:nPeople){
+    sigma[i] ~ dunif(0, 1)
+  }
+}

@@ -1,0 +1,9 @@
+# Crowd NBA, one team
+model{
+  for (i in 1:nPeople){
+    y[i] ~ dnorm(mu, 1/sigma[i]^2)T(0, 1)
+    sigma[i] ~ dunif(0, 1)
+  }	
+  mu ~ dunif(0, 1)
+  delta = mu - truth
+}
